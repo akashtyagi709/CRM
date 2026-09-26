@@ -40,6 +40,18 @@ public class AuthController {
                 .body( new ApiResponse("User registered successfully.",true,null));
     }
 
+    @PostMapping("/user-register")
+    public ResponseEntity<?> createEndUser(@RequestBody RegisterRequest request){
+        boolean created=authService.createEndUser(request);
+        if (!created){
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(new ApiResponse("Email already registered.",false,null));
+        }
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body( new ApiResponse("User registered successfully.",true,null));
+    }
+
     @PostMapping("/login")
     public  ResponseEntity<ApiResponse> loginUser(@RequestBody LoginRequest request){
         Authentication authentication =

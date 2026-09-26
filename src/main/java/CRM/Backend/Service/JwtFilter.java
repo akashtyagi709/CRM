@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.net.http.HttpHeaders;
+import io.jsonwebtoken.JwtException;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -30,10 +30,14 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (authHeader != null && authHeader.startsWith("Bearer ")){
             String token = authHeader.substring(7);
+            try {
+
             String email = jwtUtil.extractEmail(token);
 
             if (email!=null && SecurityContextHolder.getContext().getAuthentication()==null) {
                 UserDetails user = customUserDetailsService.loadUserByUsername(email);
+                System.out.println("USER: " + user.getUsername());
+                System.out.println("AUTHORITIES: " + user.getAuthorities());
                 if (jwtUtil.isTokenValid(token, user)) {
 
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
@@ -44,6 +48,19 @@ public class JwtFilter extends OncePerRequestFilter {
 
 
                 }
+            }
+            } catch (JwtException  e) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write("""
+        {
+            "msg": "Invalid JWT",
+            "success": false,
+            "data": []
+        }
+        """);
+
+                return;
             }
 
         }

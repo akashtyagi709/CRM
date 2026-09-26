@@ -42,4 +42,25 @@ public class AuthService {
 
     }
 
+    public boolean createEndUser(RegisterRequest request){
+        if(userRepository.existsByEmail(request.getEmail())){
+            return false;
+        }
+        UserEntity user = new UserEntity();
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(
+                passwordEncoder.encode(request.getPassword())
+        );
+
+        user.setCompany(
+                companyRepository.findById(1L)
+                        .orElseThrow(()->new RuntimeException("Company not present"))
+        );
+        user.setRole(Role.USER);
+        userRepository.save(user);
+        return  true;
+
+    }
+
 }
