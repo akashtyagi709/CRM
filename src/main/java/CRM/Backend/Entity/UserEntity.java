@@ -36,6 +36,10 @@ public class UserEntity {
         updatedAt = LocalDateTime.now();
     }
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id",nullable = false)
+    private CompanyEntity company;
+
     @PreUpdate
     public void onUpdate() {
         updatedAt = LocalDateTime.now();
