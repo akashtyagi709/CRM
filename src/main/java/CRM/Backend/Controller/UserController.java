@@ -2,7 +2,6 @@ package CRM.Backend.Controller;
 
 import CRM.Backend.DTO.ApiResponse;
 import CRM.Backend.DTO.UserResponse;
-import CRM.Backend.Entity.UserEntity;
 import CRM.Backend.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

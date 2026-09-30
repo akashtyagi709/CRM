@@ -1,7 +1,6 @@
 package CRM.Backend.Service;
 
 import CRM.Backend.DTO.UserResponse;
-import CRM.Backend.Entity.UserEntity;
 import CRM.Backend.Repositry.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
