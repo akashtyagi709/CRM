@@ -11,8 +11,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -26,7 +24,6 @@ public class AuthController {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
     }
-
 
     @PostMapping("/register")
     public ResponseEntity<?> createUser(@RequestBody RegisterRequest request){
@@ -62,9 +59,9 @@ public class AuthController {
                         )
                 );
         String jwtToken=jwtUtil.generateToken(request.email());
-
-    return  ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Login Successfully",true, (Map.of("Bearer", jwtToken))));
-
+        return  ResponseEntity
+            .status(HttpStatus.OK)
+            .body(new ApiResponse("Login Successfully",true, (Map.of("Bearer", jwtToken))));
      }
 
 }
