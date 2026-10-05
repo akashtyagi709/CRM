@@ -1,6 +1,5 @@
 package CRM.Backend.Service;
 
-import CRM.Backend.DTO.LoginRequest;
 import CRM.Backend.DTO.RegisterRequest;
 import CRM.Backend.Entity.UserEntity;
 import CRM.Backend.Enum.Role;

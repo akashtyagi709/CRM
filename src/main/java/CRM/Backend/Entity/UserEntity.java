@@ -3,7 +3,6 @@ package CRM.Backend.Entity;
 import CRM.Backend.Enum.Role;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 
 @Entity
