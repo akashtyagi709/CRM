@@ -12,6 +12,7 @@ public class UserService {
     UserRepository userRepository;
 
     public List<UserResponse> getAll(){
-        return userRepository.findAll() .stream() .map(user -> new UserResponse( user.getId(), user.getName(), user.getEmail(), user.getRole(), user.getCreatedAt(), user.getUpdatedAt(), user.getCompany().getCompanyName() )) .toList();
+        return userRepository.findAll() .stream()
+                .map(user -> new UserResponse( user.getId(), user.getName(), user.getEmail(), user.getRole(), user.getCreatedAt(), user.getUpdatedAt(), user.getCompany().getCompanyName() )) .toList();
     }
 }
