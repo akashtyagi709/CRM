@@ -11,6 +11,8 @@ public record UserResponse(
         Role role,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
-        String companyName
+        String companyName,
+        boolean active
+
 ) {
 }

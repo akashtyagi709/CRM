@@ -2,6 +2,7 @@ package CRM.Backend.Service;
 
 import CRM.Backend.Entity.UserEntity;
 import CRM.Backend.Repositry.UserRepository;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,6 +24,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(()->new RuntimeException("User not found"));
+        if (!user.isActive()){
+            throw new DisabledException("User account is inactive");
+        }
 
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())

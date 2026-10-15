@@ -14,7 +14,7 @@ public class JwtUtil {
             "myVeryLongSecretKeyForCRMProject2026SpringBootJWTAuthentication";
 
     private static final long EXPIRATION_TIME =
-            1000 * 60 *50;
+            1000 * 60 * 60 * 10;
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
