@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Console logs -->
+    <appender name="CONSOLE"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{50} - %msg%n%ex</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Plain text logs -->
+    <appender name="TEXT_FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/crm-backend.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/crm-backend.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>200MB</totalSizeCap>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n%ex</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Structured JSON logs -->
+    <appender name="JSON_FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/crm-backend.json</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/crm-backend.%d{yyyy-MM-dd}.%i.json.gz</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>200MB</totalSizeCap>
+        </rollingPolicy>
+
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+    </appender>
+
+    <!-- Root logger -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="TEXT_FILE"/>
+        <appender-ref ref="JSON_FILE"/>
+    </root>
+
+    <logger name="org.springframework.security" level="DEBUG"/>
+    <logger name="org.hibernate.SQL" level="DEBUG"/>
+
+</configuration>
