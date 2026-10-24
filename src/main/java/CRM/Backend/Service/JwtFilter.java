@@ -1,20 +1,24 @@
 package CRM.Backend.Service;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import io.jsonwebtoken.JwtException;
 
+@Slf4j
 @Component
 public class JwtFilter extends OncePerRequestFilter {
+
     private final JwtUtil jwtUtil;
     private final CustomUserDetailsService customUserDetailsService;
 
@@ -24,46 +28,44 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
+
         String authHeader = request.getHeader("Authorization");
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")){
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
             try {
+                String email = jwtUtil.extractEmail(token);
 
-            String email = jwtUtil.extractEmail(token);
+                if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails user = customUserDetailsService.loadUserByUsername(email);
 
-            if (email!=null && SecurityContextHolder.getContext().getAuthentication()==null) {
-                UserDetails user = customUserDetailsService.loadUserByUsername(email);
-                System.out.println("USER: " + user.getUsername());
-                System.out.println("AUTHORITIES: " + user.getAuthorities());
-                if (jwtUtil.isTokenValid(token, user)) {
-
-                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                            user, null, user.getAuthorities()
-                    );
-                    SecurityContextHolder.getContext()
-                            .setAuthentication(authenticationToken);
-
-
+                    if (jwtUtil.isTokenValid(token, user)) {
+                        UsernamePasswordAuthenticationToken authenticationToken =
+                                new UsernamePasswordAuthenticationToken(
+                                        user, null, user.getAuthorities());
+                        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    }
                 }
-            }
-            } catch (JwtException  e) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.setContentType("application/json");
-                response.getWriter().write("""
-        {
-            "msg": "Invalid JWT",
-            "success": false,
-            "data": []
-        }
-        """);
-
+            } catch (JwtException | IllegalArgumentException e) {
+                log.warn("Invalid JWT: {}", e.getMessage());
+                writeUnauthorized(response, "Invalid JWT");
+                return;
+            } catch (AuthenticationException e) {
+                log.warn("JWT authentication failed: {}", e.getMessage());
+                writeUnauthorized(response, "Invalid or inactive account");
                 return;
             }
-
         }
         filterChain.doFilter(request, response);
+    }
 
+    private void writeUnauthorized(HttpServletResponse response, String message) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.getWriter().write(
+                "{\"msg\": \"" + message + "\", \"success\": false, \"data\": []}");
     }
 }
