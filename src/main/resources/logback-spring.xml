@@ -48,7 +48,7 @@
         <appender-ref ref="JSON_FILE"/>
     </root>
 
-    <logger name="org.springframework.security" level="DEBUG"/>
-    <logger name="org.hibernate.SQL" level="DEBUG"/>
+    <logger name="org.springframework.security" level="INFO"/>
+    <logger name="org.hibernate.SQL" level="INFO"/>
 
 </configuration>
