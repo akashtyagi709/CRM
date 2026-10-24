@@ -1,8 +1,10 @@
  package CRM.Backend.Controller;
 
 import CRM.Backend.DTO.ApiResponse;
+import CRM.Backend.DTO.LeadRequest;
 import CRM.Backend.Entity.LeadEntity;
 import CRM.Backend.Service.LeadService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,19 +22,14 @@ public class LeadController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<String>> createLead(
-            @RequestBody LeadEntity lead) {
+            @Valid @RequestBody LeadRequest request) {
 
-        if (leadService.isDuplicate(lead.getEmail(), lead.getPhone())) {
-            return ResponseEntity.ok(
-                    new ApiResponse<>(
-                            "Your details are already saved. We will connect with you soon.",
-                            false,
-                            null
-                    )
-            );
+        if (leadService.isDuplicate(request.email(), request.phone())) {
+            return ResponseEntity.ok(new ApiResponse<>(
+                    "Your details are already saved. We will connect with you soon.", false, null));
         }
 
-        LeadEntity savedLead = leadService.createLead(lead);
+        leadService.createLead(request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ApiResponse<>(

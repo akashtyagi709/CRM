@@ -2,11 +2,15 @@ package CRM.Backend.Controller;
 
 import CRM.Backend.DTO.ApiResponse;
 import CRM.Backend.DTO.ChangeLeadStatusRequest;
+import CRM.Backend.DTO.PageResponse;
 import CRM.Backend.Entity.LeadEntity;
+import CRM.Backend.Enum.LeadStatus;
 import CRM.Backend.Service.LeadService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/leads")
@@ -18,16 +22,15 @@ public class LeadDataController {
         this.leadService = leadService;
     }
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<List<LeadEntity>>> getAllLeads() {
-        List<LeadEntity> leads = leadService.getAllLeads();
-        ApiResponse<List<LeadEntity>> response = new ApiResponse<>();
-        response.setMsg("Leads found Successfully");
-        response.setSuccess(true);
-        response.setData(leads);
-        return ResponseEntity.ok(response);
+    @GetMapping
+    public ResponseEntity<ApiResponse<PageResponse<LeadEntity>>> getLeads(
+            @RequestParam(required = false) LeadStatus status,
+            @RequestParam(required = false) String search,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return ResponseEntity.ok(new ApiResponse<>(
+                "Leads found Successfully", true, leadService.getLeads(status, search, pageable)));
     }
-
 
     @PostMapping("/{leadId}/status")
     public ResponseEntity<ApiResponse<LeadEntity>> changeLeadStatus(
