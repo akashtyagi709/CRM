@@ -11,10 +11,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
+import java.util.Set;
+
 
 @Service
 public class LeadService {
+    private static final Set<String> ALLOWED_SORT_FIELDS =
+            Set.of("id", "name", "email", "status", "createdAt", "updatedAt");
 
     private final LeadRepository leadRepository;
 
@@ -37,6 +40,13 @@ public class LeadService {
     }
 
     public PageResponse<LeadEntity> getLeads(LeadStatus status, String search, Pageable pageable) {
+        pageable.getSort().forEach(order -> {
+            if (!ALLOWED_SORT_FIELDS.contains(order.getProperty())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Invalid sort field. Allowed: id, name, email, status, createdAt, updatedAt");
+            }
+        });
+
         String term = (search == null) ? "" : search.trim();
         return PageResponse.from(leadRepository.search(status, term, pageable));
     }
