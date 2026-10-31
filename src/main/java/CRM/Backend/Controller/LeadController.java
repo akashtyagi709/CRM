@@ -2,7 +2,6 @@
 
 import CRM.Backend.DTO.ApiResponse;
 import CRM.Backend.DTO.LeadRequest;
-import CRM.Backend.Entity.LeadEntity;
 import CRM.Backend.Service.LeadService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

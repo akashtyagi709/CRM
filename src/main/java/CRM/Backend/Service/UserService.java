@@ -1,6 +1,5 @@
 package CRM.Backend.Service;
 
-import CRM.Backend.DTO.ApiResponse;
 import CRM.Backend.DTO.UpdateUserRequest;
 import CRM.Backend.DTO.UserResponse;
 import CRM.Backend.Entity.UserEntity;

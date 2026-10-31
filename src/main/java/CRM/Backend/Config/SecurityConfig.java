@@ -31,18 +31,15 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // public
                         .requestMatchers("/api/auth/login",
                                 "/api/auth/register",
                                 "/api/contact/**",
                                 "/health").permitAll()
-                        // admin only
                         .requestMatchers("/api/auth/user-register",
                                 "/api/users/**",
                                 "/api/updateUser/**",
                                 "/api/user/**",
                                 "/actuator/health").hasRole("ADMIN")
-                        // everything else needs a valid token
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
