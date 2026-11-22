@@ -1,5 +1,4 @@
 package CRM.Backend.Service;
-
 import CRM.Backend.DTO.UpdateUserRequest;
 import CRM.Backend.DTO.UserResponse;
 import CRM.Backend.Entity.UserEntity;
@@ -13,7 +12,6 @@ import java.util.Optional;
 public class UserService {
     @Autowired
     UserRepository userRepository;
-
     public List<UserResponse> getAll(){
         return userRepository.findAll() .stream()
                 .map(user -> new UserResponse( user.getId(), user.getName(), user.getEmail(), user.getRole(), user.getCreatedAt(), user.getUpdatedAt(), user.getCompany().getCompanyName(), user.isActive() )) .toList();
@@ -68,7 +66,5 @@ public class UserService {
                 updatedUser.getCompany().getCompanyName(),
                 updatedUser.isActive()
         ));
-
     }
-
 }

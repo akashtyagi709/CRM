@@ -1,5 +1,4 @@
 package CRM.Backend.Service;
-
 import CRM.Backend.DTO.RegisterRequest;
 import CRM.Backend.Entity.UserEntity;
 import CRM.Backend.Enum.Role;
@@ -35,7 +34,6 @@ public class AuthService {
             user.setPassword(
                     passwordEncoder.encode(request.getPassword())
             );
-
             user.setCompany(
                     companyRepository.findById(1L)
                             .orElseThrow(()->new RuntimeException("Company not present"))
@@ -56,7 +54,6 @@ public class AuthService {
         user.setPassword(
                 passwordEncoder.encode(request.getPassword())
         );
-
         user.setCompany(
                 companyRepository.findById(1L)
                         .orElseThrow(()->new RuntimeException("Company not present"))

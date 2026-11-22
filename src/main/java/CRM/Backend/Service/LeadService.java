@@ -1,5 +1,4 @@
 package CRM.Backend.Service;
-
 import CRM.Backend.DTO.LeadRequest;
 import CRM.Backend.DTO.PageResponse;
 import CRM.Backend.Entity.LeadEntity;
@@ -10,15 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.Set;
-
-
 @Service
 public class LeadService {
     private static final Set<String> ALLOWED_SORT_FIELDS =
             Set.of("id", "name", "email", "status", "createdAt", "updatedAt");
-
     private final LeadRepository leadRepository;
-
     public LeadService(LeadRepository leadRepository) {
         this.leadRepository = leadRepository;
     }
@@ -44,7 +39,6 @@ public class LeadService {
                         "Invalid sort field. Allowed: id, name, email, status, createdAt, updatedAt");
             }
         });
-
         String term = (search == null) ? "" : search.trim();
         return PageResponse.from(leadRepository.search(status, term, pageable));
     }
