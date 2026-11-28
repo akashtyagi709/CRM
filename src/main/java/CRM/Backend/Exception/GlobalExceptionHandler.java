@@ -2,6 +2,7 @@ package CRM.Backend.Exception;
 
 import CRM.Backend.DTO.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.InvalidParameterException;
 import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,5 +64,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleInvalidSort(PropertyReferenceException ex) {
         return ResponseEntity.badRequest()
                 .body(new ApiResponse<>("Invalid sort field", false, null));
+    }
+    @ExceptionHandler(InvalidParameterException.class)
+    public  ResponseEntity<ApiResponse<Void>> handleInvalidParam(Exception ex){
+        return ResponseEntity.badRequest()
+                .body((new ApiResponse<>("Invalid parameter.",false,null)));
     }
 }
